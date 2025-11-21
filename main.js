@@ -2,8 +2,180 @@
 	
 	'use strict';
 
+	// Preloader
+	const preloader = document.querySelector('#ftco-loader');
+	if (preloader) {
+		window.addEventListener('load', () => {
+			preloader.style.transition = 'opacity 0.5s ease';
+			preloader.style.opacity = '0';
+			setTimeout(() => {
+				preloader.style.display = 'none';
+			}, 500);
+		});
+	}
 
+	// Smooth scroll para navegación
+	document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+		anchor.addEventListener('click', function (e) {
+			e.preventDefault();
+			const target = document.querySelector(this.getAttribute('href'));
+			if (target) {
+				target.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start'
+				});
+			}
+		});
+	});
 
+	// Animaciones al hacer scroll
+	const animateOnScroll = () => {
+		const elements = document.querySelectorAll('.animate-box');
+		elements.forEach(element => {
+			const elementPosition = element.getBoundingClientRect().top;
+			const screenPosition = window.innerHeight;
+			if(elementPosition < screenPosition) {
+				element.classList.add('fadeInLeft');
+			}
+		});
+	};
+
+	window.addEventListener('scroll', animateOnScroll);
+	window.addEventListener('load', animateOnScroll);
+
+	// Mejora en la galería de trabajos
+	const workItems = document.querySelectorAll('.work-item');
+	workItems.forEach(item => {
+		item.addEventListener('mouseenter', function() {
+			this.querySelector('.work-info').style.opacity = '1';
+			this.querySelector('.work-info').style.transform = 'translateY(0)';
+		});
+		
+		item.addEventListener('mouseleave', function() {
+			this.querySelector('.work-info').style.opacity = '0';
+			this.querySelector('.work-info').style.transform = 'translateY(100%)';
+		});
+	});
+
+	// Contador de estadísticas mejorado
+	const counterAnimation = () => {
+		const counters = document.querySelectorAll('.js-counter');
+		counters.forEach(counter => {
+			const updateCount = () => {
+				const target = parseInt(counter.getAttribute('data-count'));
+				const count = parseInt(counter.innerText);
+				const increment = target / 200;
+
+				if (count < target) {
+					counter.innerText = Math.ceil(count + increment);
+					setTimeout(updateCount, 1);
+				} else {
+					counter.innerText = target;
+				}
+			};
+			updateCount();
+		});
+	};
+
+	// Iniciar contador cuando sea visible
+	const counterSection = document.querySelector('#counter-section');
+	if (counterSection) {
+		const observer = new IntersectionObserver((entries) => {
+			if (entries[0].isIntersecting) {
+				counterAnimation();
+			}
+		});
+		observer.observe(counterSection);
+	}
+
+	// Mejorar la experiencia del formulario de contacto
+	const contactForm = document.querySelector('#contact-form');
+	if (contactForm) {
+		contactForm.addEventListener('submit', function(e) {
+			e.preventDefault();
+			
+			// Animación de envío
+			const submitBtn = this.querySelector('button[type="submit"]');
+			submitBtn.innerHTML = '<i class="icon-spinner animate-spin"></i> Enviando...';
+			
+			// Aquí iría tu lógica de envío de formulario
+			
+			// Simulación de envío exitoso
+			setTimeout(() => {
+				submitBtn.innerHTML = '<i class="icon-check"></i> Enviado';
+				submitBtn.classList.add('success');
+				
+				// Resetear después de 3 segundos
+				setTimeout(() => {
+					submitBtn.innerHTML = 'Enviar Mensaje';
+					submitBtn.classList.remove('success');
+					this.reset();
+				}, 3000);
+			}, 2000);
+		});
+	}
+
+// Manejo del tema oscuro/claro
+const themeSwitch = document.getElementById('checkbox');
+const currentTheme = localStorage.getItem('theme');
+
+// Verificar si hay un tema guardado
+if (currentTheme) {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    if (currentTheme === 'dark') {
+        themeSwitch.checked = true;
+    }
+}
+
+// Función para cambiar el tema
+function switchTheme(e) {
+    if (e.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+    }    
+}
+
+// Evento para el switch
+themeSwitch.addEventListener('change', switchTheme, false);
+
+	// Inicialización de componentes
+	$(function(){
+		// Flexslider
+		$('.flexslider').flexslider({
+			animation: "fade",
+			controlNav: false,
+			directionNav: true,
+			slideshowSpeed: 5000,
+			animationSpeed: 600
+		});
+
+		// Owl Carousel
+		$('.owl-carousel').owlCarousel({
+			items: 4,
+			loop: true,
+			margin: 30,
+			nav: true,
+			dots: true,
+			autoplay: true,
+			autoplayTimeout: 4000,
+			responsive:{
+				0:{
+					items:1
+				},
+				600:{
+					items:2
+				},
+				1000:{
+					items:4
+				}
+			}
+		});
+	});
+
+	// Variables y funciones originales
 	var isMobile = {
 		Android: function() {
 			return navigator.userAgent.match(/Android/i);
@@ -36,7 +208,6 @@
 
 	};
 
-
 	var counter = function() {
 		$('.js-counter').countTo({
 			 formatter: function (value, options) {
@@ -44,7 +215,6 @@
 	    },
 		});
 	};
-
 
 	var counterWayPoint = function() {
 		if ($('#colorlib-counter').length > 0 ) {
@@ -58,7 +228,7 @@
 		}
 	};
 
-	// Animations
+	// Animaciones
 	var contentWayPoint = function() {
 		var i = 0;
 		$('.animate-box').waypoint( function( direction ) {
@@ -95,7 +265,6 @@
 		} , { offset: '85%' } );
 	};
 
-
 	var burgerMenu = function() {
 
 		$('.js-colorlib-nav-toggle').on('click', function(event){
@@ -110,7 +279,6 @@
 				$('body').addClass('offcanvas');	
 			}
 		});
-
 
 
 	};
@@ -202,11 +370,6 @@
 
 	};
 
-
-
-
-
-
 	var sliderMain = function() {
 		
 	  	$('#colorlib-hero .flexslider').flexslider({
@@ -246,7 +409,6 @@
 			var h = $('.image-content').outerHeight();
 			$('.sticky-parent').css('height', h);
 
-
 			if ($(window).width() <= 992 ) {
 				$("#sticky_item").trigger("sticky_kit:detach");
 			} else {
@@ -255,9 +417,8 @@
 				$("#sticky_item").trigger("sticky_kit:unstick");
 
 				$("#sticky_item").stick_in_parent();
-			}
-			
 
+			}
 			
 
 		});
@@ -297,7 +458,7 @@
 		clickMenu();
 		// navActive();
 		navigationSection();
-		// windowScroll();
+		// windowScroll
 
 
 		mobileMenuOutsideClick();
@@ -305,6 +466,5 @@
 		stickyFunction();
 		owlCrouselFeatureSlide();
 	});
-
 
 }());
